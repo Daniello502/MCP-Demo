@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+package eventstream;
+
+message KubeEvent {
+  string resource = 1;
+  string type = 2;
+  string namespace = 3;
+  string name = 4;
+  string time = 5;
+}
+
+message GetRecentEventsRequest {
+  int32 limit = 1;
+}
+
+message GetRecentEventsResponse {
+  repeated KubeEvent events = 1;
+}
+
+message StreamEventsRequest {
+  string resource = 1;
+  string namespace = 2;
+}
+
+service EventStream {
+  rpc GetRecentEvents(GetRecentEventsRequest) returns (GetRecentEventsResponse);
+  rpc StreamEvents(StreamEventsRequest) returns (stream KubeEvent);
+}
