@@ -16,7 +16,7 @@ spec:
         app: go-event-dashboard
     spec:
       imagePullSecrets:
-      - name: ghcr-secret
+      - name: docker-hub-secret
       containers:
       - name: go-event-dashboard
         image: docker.io/daniello502/mcp-demo-go-event-dashboard:latest

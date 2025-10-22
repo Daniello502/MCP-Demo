@@ -53,13 +53,13 @@ echo "🚀 Deploying Kubernetes resources..."
 # Create namespace
 kubectl apply -f kubernetes/namespace.yaml
 
-# Create GitHub Container Registry secret
-echo "🔐 Creating GitHub Container Registry secret..."
-kubectl delete secret ghcr-secret -n mcp-demo --ignore-not-found=true
-kubectl create secret docker-registry ghcr-secret \
-  --docker-server=ghcr.io \
-  --docker-username=daniello502 \
-  --docker-password=$GITHUB_TOKEN \
+# Create Docker Hub secret
+echo "🔐 Creating Docker Hub secret..."
+kubectl delete secret docker-hub-secret -n mcp-demo --ignore-not-found=true
+kubectl create secret docker-registry docker-hub-secret \
+  --docker-server="docker.io" \
+  --docker-username="$DOCKER_HUB_USERNAME" \
+  --docker-password="$DOCKER_HUB_TOKEN" \
   --namespace=mcp-demo
 
 # Deploy Go Event Dashboard
