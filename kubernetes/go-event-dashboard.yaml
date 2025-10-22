@@ -19,7 +19,7 @@ spec:
       - name: ghcr-secret
       containers:
       - name: go-event-dashboard
-        image: ghcr.io/daniello502/mcp-demo-go-event-dashboard:latest
+        image: docker.io/daniello502/mcp-demo-go-event-dashboard:latest
         ports:
         - containerPort: 8080
           name: http
@@ -43,6 +43,7 @@ spec:
           limits:
             memory: "512Mi"
             cpu: "500m"
+        imagePullPolicy: Always
         livenessProbe:
           httpGet:
             path: /health

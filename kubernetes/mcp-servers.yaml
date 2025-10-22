@@ -22,7 +22,7 @@ spec:
       - name: ghcr-secret
       containers:
       - name: data-processor
-        image: ghcr.io/daniello502/mcp-demo-data-processor:latest
+        image: docker.io/daniello502/mcp-demo-data-processor:latest
         ports:
         - containerPort: 8080
           name: http
@@ -36,6 +36,7 @@ spec:
           limits:
             memory: "256Mi"
             cpu: "200m"
+        imagePullPolicy: Always
         livenessProbe:
           tcpSocket:
             port: 8080
@@ -83,7 +84,7 @@ spec:
       - name: ghcr-secret
       containers:
       - name: analytics
-        image: ghcr.io/daniello502/mcp-demo-analytics:latest
+        image: docker.io/daniello502/mcp-demo-analytics:latest
         ports:
         - containerPort: 8080
           name: http
@@ -97,6 +98,7 @@ spec:
           limits:
             memory: "256Mi"
             cpu: "200m"
+        imagePullPolicy: Always
         livenessProbe:
           tcpSocket:
             port: 8080
@@ -144,7 +146,7 @@ spec:
       - name: ghcr-secret
       containers:
       - name: notification
-        image: ghcr.io/daniello502/mcp-demo-notification:latest
+        image: docker.io/daniello502/mcp-demo-notification:latest
         ports:
         - containerPort: 8080
           name: http
@@ -158,6 +160,7 @@ spec:
           limits:
             memory: "256Mi"
             cpu: "200m"
+        imagePullPolicy: Always
         livenessProbe:
           tcpSocket:
             port: 8080
