@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
       - name: data-processor
-        image: ghcr.io/daniello/mcp-data-processor:latest
+        image: ghcr.io/Daniello502/mcp-data-processor:latest
         ports:
         - containerPort: 8080
           name: http
@@ -79,7 +79,7 @@ spec:
     spec:
       containers:
       - name: analytics
-        image: ghcr.io/daniello/mcp-analytics:latest
+        image: ghcr.io/Daniello502/mcp-analytics:latest
         ports:
         - containerPort: 8080
           name: http
@@ -138,7 +138,7 @@ spec:
     spec:
       containers:
       - name: notification
-        image: ghcr.io/daniello/mcp-notification:latest
+        image: ghcr.io/Daniello502/mcp-notification:latest
         ports:
         - containerPort: 8080
           name: http

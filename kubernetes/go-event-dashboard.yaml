@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: go-event-dashboard
-        image: ghcr.io/daniello/go-event-dashboard:latest
+        image: ghcr.io/Daniello502/go-event-dashboard:latest
         ports:
         - containerPort: 8080
           name: http
