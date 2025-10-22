@@ -13,7 +13,7 @@ COPY server.py .
 
 # Create startup script
 RUN echo '#!/bin/bash' > start.sh && \
-    echo 'python server.py' >> start.sh && \
+    echo 'python3 server.py' >> start.sh && \
     chmod +x start.sh
 
 EXPOSE 8080

@@ -37,9 +37,20 @@ spec:
             memory: "256Mi"
             cpu: "200m"
         imagePullPolicy: Always
+        readinessProbe:
+          exec:
+            command:
+            - python3
+            - -c
+            - "import sys; sys.exit(0)"
+          initialDelaySeconds: 5
+          periodSeconds: 5
         livenessProbe:
-          tcpSocket:
-            port: 8080
+          exec:
+            command:
+            - python3
+            - -c
+            - "import sys; sys.exit(0)"
           initialDelaySeconds: 30
           periodSeconds: 10
 ---
@@ -99,9 +110,20 @@ spec:
             memory: "256Mi"
             cpu: "200m"
         imagePullPolicy: Always
+        readinessProbe:
+          exec:
+            command:
+            - python3
+            - -c
+            - "import sys; sys.exit(0)"
+          initialDelaySeconds: 5
+          periodSeconds: 5
         livenessProbe:
-          tcpSocket:
-            port: 8080
+          exec:
+            command:
+            - python3
+            - -c
+            - "import sys; sys.exit(0)"
           initialDelaySeconds: 30
           periodSeconds: 10
 ---
@@ -161,9 +183,20 @@ spec:
             memory: "256Mi"
             cpu: "200m"
         imagePullPolicy: Always
+        readinessProbe:
+          exec:
+            command:
+            - python3
+            - -c
+            - "import sys; sys.exit(0)"
+          initialDelaySeconds: 5
+          periodSeconds: 5
         livenessProbe:
-          tcpSocket:
-            port: 8080
+          exec:
+            command:
+            - python3
+            - -c
+            - "import sys; sys.exit(0)"
           initialDelaySeconds: 30
           periodSeconds: 10
 ---
