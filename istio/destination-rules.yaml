@@ -12,7 +12,7 @@ spec:
       http:
         http1MaxPendingRequests: 10
         maxRequestsPerConnection: 2
-    circuitBreaker:
+    outlierDetection:
       consecutiveErrors: 3
       interval: 30s
       baseEjectionTime: 30s
@@ -33,7 +33,7 @@ spec:
       http:
         http1MaxPendingRequests: 20
         maxRequestsPerConnection: 2
-    circuitBreaker:
+    outlierDetection:
       consecutiveErrors: 5
       interval: 30s
       baseEjectionTime: 30s
@@ -54,7 +54,7 @@ spec:
       http:
         http1MaxPendingRequests: 15
         maxRequestsPerConnection: 2
-    circuitBreaker:
+    outlierDetection:
       consecutiveErrors: 3
       interval: 30s
       baseEjectionTime: 30s
@@ -75,7 +75,7 @@ spec:
       http:
         http1MaxPendingRequests: 10
         maxRequestsPerConnection: 2
-    circuitBreaker:
+    outlierDetection:
       consecutiveErrors: 3
       interval: 30s
       baseEjectionTime: 30s
