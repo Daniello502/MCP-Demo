@@ -18,6 +18,8 @@ spec:
         app: mcp-data-processor
         mcp-server: "true"
     spec:
+      imagePullSecrets:
+      - name: ghcr-secret
       containers:
       - name: data-processor
         image: ghcr.io/daniello502/mcp-demo-data-processor:latest
@@ -77,6 +79,8 @@ spec:
         app: mcp-analytics
         mcp-server: "true"
     spec:
+      imagePullSecrets:
+      - name: ghcr-secret
       containers:
       - name: analytics
         image: ghcr.io/daniello502/mcp-demo-analytics:latest
@@ -136,6 +140,8 @@ spec:
         app: mcp-notification
         mcp-server: "true"
     spec:
+      imagePullSecrets:
+      - name: ghcr-secret
       containers:
       - name: notification
         image: ghcr.io/daniello502/mcp-demo-notification:latest

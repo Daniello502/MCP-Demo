@@ -15,6 +15,8 @@ spec:
       labels:
         app: go-event-dashboard
     spec:
+      imagePullSecrets:
+      - name: ghcr-secret
       containers:
       - name: go-event-dashboard
         image: ghcr.io/daniello502/mcp-demo-go-event-dashboard:latest
