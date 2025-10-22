@@ -59,8 +59,7 @@ kubectl create secret docker-registry ghcr-secret \
   --docker-server=ghcr.io \
   --docker-username=daniello502 \
   --docker-password=$GITHUB_TOKEN \
-  --namespace=mcp-demo \
-  --dry-run=client -o yaml | kubectl apply -f -
+  --namespace=mcp-demo
 
 # Deploy Go Event Dashboard
 kubectl apply -f kubernetes/go-event-dashboard.yaml
