@@ -1,0 +1,176 @@
+# Data Processor MCP Server
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mcp-data-processor
+  namespace: mcp-demo
+  labels:
+    app: mcp-data-processor
+    mcp-server: "true"
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: mcp-data-processor
+  template:
+    metadata:
+      labels:
+        app: mcp-data-processor
+        mcp-server: "true"
+    spec:
+      containers:
+      - name: data-processor
+        image: mcp-data-processor:latest
+        ports:
+        - containerPort: 8080
+          name: http
+        env:
+        - name: MCP_SERVER_NAME
+          value: "data-processor"
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "50m"
+          limits:
+            memory: "256Mi"
+            cpu: "200m"
+        livenessProbe:
+          tcpSocket:
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 10
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mcp-data-processor
+  namespace: mcp-demo
+  labels:
+    app: mcp-data-processor
+    mcp-server: "true"
+spec:
+  selector:
+    app: mcp-data-processor
+  ports:
+  - name: http
+    port: 8080
+    targetPort: 8080
+  type: ClusterIP
+---
+# Analytics MCP Server
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mcp-analytics
+  namespace: mcp-demo
+  labels:
+    app: mcp-analytics
+    mcp-server: "true"
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: mcp-analytics
+  template:
+    metadata:
+      labels:
+        app: mcp-analytics
+        mcp-server: "true"
+    spec:
+      containers:
+      - name: analytics
+        image: mcp-analytics:latest
+        ports:
+        - containerPort: 8080
+          name: http
+        env:
+        - name: MCP_SERVER_NAME
+          value: "analytics"
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "50m"
+          limits:
+            memory: "256Mi"
+            cpu: "200m"
+        livenessProbe:
+          tcpSocket:
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 10
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mcp-analytics
+  namespace: mcp-demo
+  labels:
+    app: mcp-analytics
+    mcp-server: "true"
+spec:
+  selector:
+    app: mcp-analytics
+  ports:
+  - name: http
+    port: 8080
+    targetPort: 8080
+  type: ClusterIP
+---
+# Notification MCP Server
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mcp-notification
+  namespace: mcp-demo
+  labels:
+    app: mcp-notification
+    mcp-server: "true"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mcp-notification
+  template:
+    metadata:
+      labels:
+        app: mcp-notification
+        mcp-server: "true"
+    spec:
+      containers:
+      - name: notification
+        image: mcp-notification:latest
+        ports:
+        - containerPort: 8080
+          name: http
+        env:
+        - name: MCP_SERVER_NAME
+          value: "notification"
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "50m"
+          limits:
+            memory: "256Mi"
+            cpu: "200m"
+        livenessProbe:
+          tcpSocket:
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 10
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mcp-notification
+  namespace: mcp-demo
+  labels:
+    app: mcp-notification
+    mcp-server: "true"
+spec:
+  selector:
+    app: mcp-notification
+  ports:
+  - name: http
+    port: 8080
+    targetPort: 8080
+  type: ClusterIP

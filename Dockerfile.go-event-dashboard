@@ -1,0 +1,39 @@
+# Build stage
+FROM golang:1.21-alpine AS builder
+
+WORKDIR /app
+
+# Copy go mod files
+COPY go-event-dashboard/go.mod go-event-dashboard/go.sum ./
+RUN go mod download
+
+# Copy source code
+COPY go-event-dashboard/ ./
+
+# Build the application
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o main main.go
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o grpc-server cmd/grpc-server/main.go
+
+# Final stage
+FROM alpine:latest
+
+RUN apk --no-cache add ca-certificates tzdata
+
+WORKDIR /root/
+
+# Copy binaries from builder
+COPY --from=builder /app/main .
+COPY --from=builder /app/grpc-server .
+
+# Create startup script
+RUN echo '#!/bin/sh' > start.sh && \
+    echo 'if [ "$SERVER_TYPE" = "grpc" ]; then' >> start.sh && \
+    echo '  ./grpc-server' >> start.sh && \
+    echo 'else' >> start.sh && \
+    echo '  ./main' >> start.sh && \
+    echo 'fi' >> start.sh && \
+    chmod +x start.sh
+
+EXPOSE 8080 50051
+
+CMD ["./start.sh"]

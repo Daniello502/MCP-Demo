@@ -1,0 +1,52 @@
+apiVersion: telemetry.istio.io/v1alpha1
+kind: Telemetry
+metadata:
+  name: mcp-demo-telemetry
+  namespace: mcp-demo
+spec:
+  metrics:
+  - providers:
+    - name: prometheus
+  - overrides:
+    - match:
+        metric: ALL_METRICS
+      tagOverrides:
+        destination_service_name:
+          value: "mcp-demo"
+        destination_service_namespace:
+          value: "mcp-demo"
+  accessLogging:
+  - providers:
+    - name: otel
+  - providers:
+    - name: prometheus
+  tracing:
+  - providers:
+    - name: jaeger
+---
+apiVersion: telemetry.istio.io/v1alpha1
+kind: Telemetry
+metadata:
+  name: mcp-servers-telemetry
+  namespace: mcp-demo
+spec:
+  selector:
+    matchLabels:
+      mcp-server: "true"
+  metrics:
+  - providers:
+    - name: prometheus
+  - overrides:
+    - match:
+        metric: ALL_METRICS
+      tagOverrides:
+        source_service_name:
+          value: "mcp-server"
+        source_service_namespace:
+          value: "mcp-demo"
+  accessLogging:
+  - providers:
+    - name: otel
+  tracing:
+  - providers:
+    - name: jaeger
