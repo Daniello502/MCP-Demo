@@ -55,6 +55,7 @@ kubectl apply -f kubernetes/namespace.yaml
 
 # Create GitHub Container Registry secret
 echo "🔐 Creating GitHub Container Registry secret..."
+kubectl delete secret ghcr-secret -n mcp-demo --ignore-not-found=true
 kubectl create secret docker-registry ghcr-secret \
   --docker-server=ghcr.io \
   --docker-username=daniello502 \
@@ -79,10 +80,10 @@ kubectl apply -f monitoring/prometheus.yaml
 kubectl apply -f monitoring/grafana.yaml
 
 echo "⏳ Waiting for deployments to be ready..."
-kubectl wait --for=condition=available --timeout=300s deployment/go-event-dashboard -n mcp-demo
-kubectl wait --for=condition=available --timeout=300s deployment/mcp-data-processor -n mcp-demo
-kubectl wait --for=condition=available --timeout=300s deployment/mcp-analytics -n mcp-demo
-kubectl wait --for=condition=available --timeout=300s deployment/mcp-notification -n mcp-demo
+kubectl wait --for=condition=available --timeout=180s deployment/go-event-dashboard -n mcp-demo
+kubectl wait --for=condition=available --timeout=180s deployment/mcp-data-processor -n mcp-demo
+kubectl wait --for=condition=available --timeout=180s deployment/mcp-analytics -n mcp-demo
+kubectl wait --for=condition=available --timeout=180s deployment/mcp-notification -n mcp-demo
 
 echo "🎉 Deployment completed successfully!"
 
