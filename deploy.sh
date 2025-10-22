@@ -25,28 +25,24 @@ echo "🔨 Building and pushing container images..."
 
 # Build Go Event Dashboard
 echo "Building go-event-dashboard..."
-podman build -f Dockerfile.go-event-dashboard -t go-event-dashboard:latest .
-podman tag go-event-dashboard:latest localhost:5000/go-event-dashboard:latest
-podman push localhost:5000/go-event-dashboard:latest
+podman build -f Dockerfile.go-event-dashboard -t ghcr.io/daniello/go-event-dashboard:latest .
+podman push ghcr.io/daniello/go-event-dashboard:latest
 
 # Build MCP Servers
 echo "Building MCP servers..."
 cd mcp-servers/data-processor
-podman build -t mcp-data-processor:latest .
-podman tag mcp-data-processor:latest localhost:5000/mcp-data-processor:latest
-podman push localhost:5000/mcp-data-processor:latest
+podman build -t ghcr.io/daniello/mcp-data-processor:latest .
+podman push ghcr.io/daniello/mcp-data-processor:latest
 cd ../..
 
 cd mcp-servers/analytics
-podman build -t mcp-analytics:latest .
-podman tag mcp-analytics:latest localhost:5000/mcp-analytics:latest
-podman push localhost:5000/mcp-analytics:latest
+podman build -t ghcr.io/daniello/mcp-analytics:latest .
+podman push ghcr.io/daniello/mcp-analytics:latest
 cd ../..
 
 cd mcp-servers/notification
-podman build -t mcp-notification:latest .
-podman tag mcp-notification:latest localhost:5000/mcp-notification:latest
-podman push localhost:5000/mcp-notification:latest
+podman build -t ghcr.io/daniello/mcp-notification:latest .
+podman push ghcr.io/daniello/mcp-notification:latest
 cd ../..
 
 echo "✅ Container images built and pushed"
