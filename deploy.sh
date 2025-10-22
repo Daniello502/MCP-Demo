@@ -25,24 +25,24 @@ echo "🔨 Building and pushing container images..."
 
 # Build Go Event Dashboard
 echo "Building go-event-dashboard..."
-podman build -f Dockerfile.go-event-dashboard -t docker.io/daniello502/mcp-demo-go-event-dashboard:latest .
-podman push docker.io/daniello502/mcp-demo-go-event-dashboard:latest
+podman build -f Dockerfile.go-event-dashboard -t "docker.io/$DOCKER_HUB_USERNAME/mcp-demo-go-event-dashboard:latest" .
+podman push "docker.io/$DOCKER_HUB_USERNAME/mcp-demo-go-event-dashboard:latest"
 
 # Build MCP Servers
 echo "Building MCP servers..."
 cd mcp-servers/data-processor
-podman build -t docker.io/daniello502/mcp-demo-data-processor:latest .
-podman push docker.io/daniello502/mcp-demo-data-processor:latest
+podman build -t "docker.io/$DOCKER_HUB_USERNAME/mcp-demo-data-processor:latest" .
+podman push "docker.io/$DOCKER_HUB_USERNAME/mcp-demo-data-processor:latest"
 cd ../..
 
 cd mcp-servers/analytics
-podman build -t docker.io/daniello502/mcp-demo-analytics:latest .
-podman push docker.io/daniello502/mcp-demo-analytics:latest
+podman build -t "docker.io/$DOCKER_HUB_USERNAME/mcp-demo-analytics:latest" .
+podman push "docker.io/$DOCKER_HUB_USERNAME/mcp-demo-analytics:latest"
 cd ../..
 
 cd mcp-servers/notification
-podman build -t docker.io/daniello502/mcp-demo-notification:latest .
-podman push docker.io/daniello502/mcp-demo-notification:latest
+podman build -t "docker.io/$DOCKER_HUB_USERNAME/mcp-demo-notification:latest" .
+podman push "docker.io/$DOCKER_HUB_USERNAME/mcp-demo-notification:latest"
 cd ../..
 
 echo "✅ Container images built and pushed"
