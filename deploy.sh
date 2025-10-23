@@ -68,6 +68,13 @@ kubectl apply -f kubernetes/go-event-dashboard.yaml
 # Deploy MCP Servers
 kubectl apply -f kubernetes/mcp-servers.yaml
 
+# Force restart deployments to pick up new images
+echo "🔄 Restarting deployments to pick up new images..."
+kubectl rollout restart deployment/mcp-data-processor -n mcp-demo
+kubectl rollout restart deployment/mcp-analytics -n mcp-demo
+kubectl rollout restart deployment/mcp-notification -n mcp-demo
+kubectl rollout restart deployment/go-event-dashboard -n mcp-demo
+
 # Deploy Istio configuration
 echo "🔧 Applying Istio configuration..."
 kubectl apply -f istio/gateway.yaml
