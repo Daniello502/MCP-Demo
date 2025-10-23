@@ -23,32 +23,38 @@ echo "✅ Prerequisites check passed"
 # Build and push images
 echo "🔨 Building and pushing container images..."
 
+# Get git commit hash for unique image tags (short version)
+GIT_COMMIT=$(git rev-parse --short HEAD)
+echo "Using git commit: $GIT_COMMIT"
+
 # Build Go Event Dashboard
 echo "Building go-event-dashboard..."
-podman build -f Dockerfile.go-event-dashboard -t "docker.io/maxperreo/mcp-demo-go-event-dashboard:latest" .
+podman build -f Dockerfile.go-event-dashboard -t "docker.io/maxperreo/mcp-demo-go-event-dashboard:$GIT_COMMIT" .
+podman push "docker.io/maxperreo/mcp-demo-go-event-dashboard:$GIT_COMMIT"
+podman tag "docker.io/maxperreo/mcp-demo-go-event-dashboard:$GIT_COMMIT" "docker.io/maxperreo/mcp-demo-go-event-dashboard:latest"
 podman push "docker.io/maxperreo/mcp-demo-go-event-dashboard:latest"
 
 # Build MCP Servers
 echo "Building MCP servers..."
 cd mcp-servers/data-processor
-podman build -t "docker.io/$DOCKER_HUB_USERNAME/mcp-demo-data-processor:$GIT_COMMIT" .
-podman push "docker.io/$DOCKER_HUB_USERNAME/mcp-demo-data-processor:$GIT_COMMIT"
-podman tag "docker.io/$DOCKER_HUB_USERNAME/mcp-demo-data-processor:$GIT_COMMIT" "docker.io/$DOCKER_HUB_USERNAME/mcp-demo-data-processor:latest"
-podman push "docker.io/$DOCKER_HUB_USERNAME/mcp-demo-data-processor:latest"
+podman build -t "docker.io/maxperreo/mcp-demo-data-processor:$GIT_COMMIT" .
+podman push "docker.io/maxperreo/mcp-demo-data-processor:$GIT_COMMIT"
+podman tag "docker.io/maxperreo/mcp-demo-data-processor:$GIT_COMMIT" "docker.io/maxperreo/mcp-demo-data-processor:latest"
+podman push "docker.io/maxperreo/mcp-demo-data-processor:latest"
 cd ../..
 
 cd mcp-servers/analytics
-podman build -t "docker.io/$DOCKER_HUB_USERNAME/mcp-demo-analytics:$GIT_COMMIT" .
-podman push "docker.io/$DOCKER_HUB_USERNAME/mcp-demo-analytics:$GIT_COMMIT"
-podman tag "docker.io/$DOCKER_HUB_USERNAME/mcp-demo-analytics:$GIT_COMMIT" "docker.io/$DOCKER_HUB_USERNAME/mcp-demo-analytics:latest"
-podman push "docker.io/$DOCKER_HUB_USERNAME/mcp-demo-analytics:latest"
+podman build -t "docker.io/maxperreo/mcp-demo-analytics:$GIT_COMMIT" .
+podman push "docker.io/maxperreo/mcp-demo-analytics:$GIT_COMMIT"
+podman tag "docker.io/maxperreo/mcp-demo-analytics:$GIT_COMMIT" "docker.io/maxperreo/mcp-demo-analytics:latest"
+podman push "docker.io/maxperreo/mcp-demo-analytics:latest"
 cd ../..
 
 cd mcp-servers/notification
-podman build -t "docker.io/$DOCKER_HUB_USERNAME/mcp-demo-notification:$GIT_COMMIT" .
-podman push "docker.io/$DOCKER_HUB_USERNAME/mcp-demo-notification:$GIT_COMMIT"
-podman tag "docker.io/$DOCKER_HUB_USERNAME/mcp-demo-notification:$GIT_COMMIT" "docker.io/$DOCKER_HUB_USERNAME/mcp-demo-notification:latest"
-podman push "docker.io/$DOCKER_HUB_USERNAME/mcp-demo-notification:latest"
+podman build -t "docker.io/maxperreo/mcp-demo-notification:$GIT_COMMIT" .
+podman push "docker.io/maxperreo/mcp-demo-notification:$GIT_COMMIT"
+podman tag "docker.io/maxperreo/mcp-demo-notification:$GIT_COMMIT" "docker.io/maxperreo/mcp-demo-notification:latest"
+podman push "docker.io/maxperreo/mcp-demo-notification:latest"
 cd ../..
 
 echo "✅ Container images built and pushed"
