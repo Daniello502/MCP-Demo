@@ -31,18 +31,24 @@ podman push "docker.io/maxperreo/mcp-demo-go-event-dashboard:latest"
 # Build MCP Servers
 echo "Building MCP servers..."
 cd mcp-servers/data-processor
-podman build -t "docker.io/maxperreo/mcp-demo-data-processor:latest" .
-podman push "docker.io/maxperreo/mcp-demo-data-processor:latest"
+podman build -t "docker.io/$DOCKER_HUB_USERNAME/mcp-demo-data-processor:$GIT_COMMIT" .
+podman push "docker.io/$DOCKER_HUB_USERNAME/mcp-demo-data-processor:$GIT_COMMIT"
+podman tag "docker.io/$DOCKER_HUB_USERNAME/mcp-demo-data-processor:$GIT_COMMIT" "docker.io/$DOCKER_HUB_USERNAME/mcp-demo-data-processor:latest"
+podman push "docker.io/$DOCKER_HUB_USERNAME/mcp-demo-data-processor:latest"
 cd ../..
 
 cd mcp-servers/analytics
-podman build -t "docker.io/maxperreo/mcp-demo-analytics:latest" .
-podman push "docker.io/maxperreo/mcp-demo-analytics:latest"
+podman build -t "docker.io/$DOCKER_HUB_USERNAME/mcp-demo-analytics:$GIT_COMMIT" .
+podman push "docker.io/$DOCKER_HUB_USERNAME/mcp-demo-analytics:$GIT_COMMIT"
+podman tag "docker.io/$DOCKER_HUB_USERNAME/mcp-demo-analytics:$GIT_COMMIT" "docker.io/$DOCKER_HUB_USERNAME/mcp-demo-analytics:latest"
+podman push "docker.io/$DOCKER_HUB_USERNAME/mcp-demo-analytics:latest"
 cd ../..
 
 cd mcp-servers/notification
-podman build -t "docker.io/maxperreo/mcp-demo-notification:latest" .
-podman push "docker.io/maxperreo/mcp-demo-notification:latest"
+podman build -t "docker.io/$DOCKER_HUB_USERNAME/mcp-demo-notification:$GIT_COMMIT" .
+podman push "docker.io/$DOCKER_HUB_USERNAME/mcp-demo-notification:$GIT_COMMIT"
+podman tag "docker.io/$DOCKER_HUB_USERNAME/mcp-demo-notification:$GIT_COMMIT" "docker.io/$DOCKER_HUB_USERNAME/mcp-demo-notification:latest"
+podman push "docker.io/$DOCKER_HUB_USERNAME/mcp-demo-notification:latest"
 cd ../..
 
 echo "✅ Container images built and pushed"
@@ -68,12 +74,7 @@ kubectl apply -f kubernetes/go-event-dashboard.yaml
 # Deploy MCP Servers
 kubectl apply -f kubernetes/mcp-servers.yaml
 
-# Force restart deployments to pick up new images
-echo "🔄 Restarting deployments to pick up new images..."
-kubectl rollout restart deployment/mcp-data-processor -n mcp-demo
-kubectl rollout restart deployment/mcp-analytics -n mcp-demo
-kubectl rollout restart deployment/mcp-notification -n mcp-demo
-kubectl rollout restart deployment/go-event-dashboard -n mcp-demo
+# Kubernetes will automatically detect the new images and redeploy
 
 # Deploy Istio configuration
 echo "🔧 Applying Istio configuration..."
