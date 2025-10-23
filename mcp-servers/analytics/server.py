@@ -19,6 +19,7 @@ from mcp.types import (
     ListToolsResult,
     Tool,
     TextContent,
+    ServerCapabilities,
 )
 
 # Configure logging
@@ -182,15 +183,16 @@ async def main():
     server_instance = AnalyticsServer()
     
     async with stdio_server() as (read_stream, write_stream):
+        # FIXED: Simply call run() without manually creating InitializationOptions
+        # The MCP SDK will handle capabilities automatically
         await server_instance.server.run(
             read_stream,
             write_stream,
             InitializationOptions(
                 server_name="analytics",
                 server_version="1.0.0",
-                capabilities=server_instance.server.get_capabilities(
-                    notification_options=None,
-                    experimental_capabilities=None
+                capabilities=ServerCapabilities(
+                    tools={}  
                 )
             )
         )

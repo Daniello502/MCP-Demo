@@ -18,6 +18,7 @@ from mcp.types import (
     ListToolsResult,
     Tool,
     TextContent,
+    ServerCapabilities,
 )
 
 # Configure logging
@@ -198,9 +199,8 @@ async def main():
             InitializationOptions(
                 server_name="notification",
                 server_version="1.0.0",
-                capabilities=server_instance.server.get_capabilities(
-                    notification_options=None,
-                    experimental_capabilities=None
+                capabilities=ServerCapabilities(
+                    tools={}  
                 )
             )
         )

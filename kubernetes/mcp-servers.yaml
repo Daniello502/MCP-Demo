@@ -17,12 +17,13 @@ spec:
       labels:
         app: mcp-data-processor
         mcp-server: "true"
-    spec:
+    spec: 
       imagePullSecrets:
       - name: docker-hub-secret
       containers:
       - name: data-processor
         image: docker.io/maxperreo/mcp-demo-data-processor:latest
+        imagePullPolicy: Always
         ports:
         - containerPort: 8080
           name: http

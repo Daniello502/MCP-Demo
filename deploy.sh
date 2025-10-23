@@ -24,36 +24,40 @@ echo "✅ Prerequisites check passed"
 echo "🔨 Building and pushing container images..."
 
 # Get git commit hash for unique image tags (short version)
-GIT_COMMIT=$(git rev-parse --short HEAD)
-echo "Using git commit: $GIT_COMMIT"
+GIT_COMMIT=$(git rev-parse --short HEAD 2>/dev/null || echo "dev-$(date +%s)")
+TIMESTAMP=$(date +%Y%m%d-%H%M%S)
+IMAGE_TAG="${GIT_COMMIT}-${TIMESTAMP}"
+echo "Using image tag: $IMAGE_TAG"
 
 # Build Go Event Dashboard
 echo "Building go-event-dashboard..."
-podman build -f Dockerfile.go-event-dashboard -t "docker.io/maxperreo/mcp-demo-go-event-dashboard:$GIT_COMMIT" .
-podman push "docker.io/maxperreo/mcp-demo-go-event-dashboard:$GIT_COMMIT"
-podman tag "docker.io/maxperreo/mcp-demo-go-event-dashboard:$GIT_COMMIT" "docker.io/maxperreo/mcp-demo-go-event-dashboard:latest"
+podman build -f Dockerfile.go-event-dashboard -t "docker.io/maxperreo/mcp-demo-go-event-dashboard:$IMAGE_TAG" .
+podman push "docker.io/maxperreo/mcp-demo-go-event-dashboard:$IMAGE_TAG"
+podman tag "docker.io/maxperreo/mcp-demo-go-event-dashboard:$IMAGE_TAG" "docker.io/maxperreo/mcp-demo-go-event-dashboard:latest"
 podman push "docker.io/maxperreo/mcp-demo-go-event-dashboard:latest"
 
 # Build MCP Servers
-echo "Building MCP servers..."
+echo "Building data-processor..."
 cd mcp-servers/data-processor
-podman build -t "docker.io/maxperreo/mcp-demo-data-processor:$GIT_COMMIT" .
-podman push "docker.io/maxperreo/mcp-demo-data-processor:$GIT_COMMIT"
-podman tag "docker.io/maxperreo/mcp-demo-data-processor:$GIT_COMMIT" "docker.io/maxperreo/mcp-demo-data-processor:latest"
+podman build -t "docker.io/maxperreo/mcp-demo-data-processor:$IMAGE_TAG" .
+podman push "docker.io/maxperreo/mcp-demo-data-processor:$IMAGE_TAG"
+podman tag "docker.io/maxperreo/mcp-demo-data-processor:$IMAGE_TAG" "docker.io/maxperreo/mcp-demo-data-processor:latest"
 podman push "docker.io/maxperreo/mcp-demo-data-processor:latest"
 cd ../..
 
+echo "Building analytics..."
 cd mcp-servers/analytics
-podman build -t "docker.io/maxperreo/mcp-demo-analytics:$GIT_COMMIT" .
-podman push "docker.io/maxperreo/mcp-demo-analytics:$GIT_COMMIT"
-podman tag "docker.io/maxperreo/mcp-demo-analytics:$GIT_COMMIT" "docker.io/maxperreo/mcp-demo-analytics:latest"
+podman build -t "docker.io/maxperreo/mcp-demo-analytics:$IMAGE_TAG" .
+podman push "docker.io/maxperreo/mcp-demo-analytics:$IMAGE_TAG"
+podman tag "docker.io/maxperreo/mcp-demo-analytics:$IMAGE_TAG" "docker.io/maxperreo/mcp-demo-analytics:latest"
 podman push "docker.io/maxperreo/mcp-demo-analytics:latest"
 cd ../..
 
+echo "Building notification..."
 cd mcp-servers/notification
-podman build -t "docker.io/maxperreo/mcp-demo-notification:$GIT_COMMIT" .
-podman push "docker.io/maxperreo/mcp-demo-notification:$GIT_COMMIT"
-podman tag "docker.io/maxperreo/mcp-demo-notification:$GIT_COMMIT" "docker.io/maxperreo/mcp-demo-notification:latest"
+podman build -t "docker.io/maxperreo/mcp-demo-notification:$IMAGE_TAG" .
+podman push "docker.io/maxperreo/mcp-demo-notification:$IMAGE_TAG"
+podman tag "docker.io/maxperreo/mcp-demo-notification:$IMAGE_TAG" "docker.io/maxperreo/mcp-demo-notification:latest"
 podman push "docker.io/maxperreo/mcp-demo-notification:latest"
 cd ../..
 
@@ -80,7 +84,12 @@ kubectl apply -f kubernetes/go-event-dashboard.yaml
 # Deploy MCP Servers
 kubectl apply -f kubernetes/mcp-servers.yaml
 
-# Kubernetes will automatically detect the new images and redeploy
+# Force rollout restart to pull new images
+echo "🔄 Forcing deployment rollout..."
+kubectl rollout restart deployment/go-event-dashboard -n mcp-demo
+kubectl rollout restart deployment/mcp-data-processor -n mcp-demo
+kubectl rollout restart deployment/mcp-analytics -n mcp-demo
+kubectl rollout restart deployment/mcp-notification -n mcp-demo
 
 # Deploy Istio configuration
 echo "🔧 Applying Istio configuration..."
@@ -94,10 +103,10 @@ kubectl apply -f monitoring/prometheus.yaml
 kubectl apply -f monitoring/grafana.yaml
 
 echo "⏳ Waiting for deployments to be ready..."
-kubectl wait --for=condition=available --timeout=180s deployment/go-event-dashboard -n mcp-demo
-kubectl wait --for=condition=available --timeout=180s deployment/mcp-data-processor -n mcp-demo
-kubectl wait --for=condition=available --timeout=180s deployment/mcp-analytics -n mcp-demo
-kubectl wait --for=condition=available --timeout=180s deployment/mcp-notification -n mcp-demo
+kubectl rollout status deployment/go-event-dashboard -n mcp-demo --timeout=180s
+kubectl rollout status deployment/mcp-data-processor -n mcp-demo --timeout=180s
+kubectl rollout status deployment/mcp-analytics -n mcp-demo --timeout=180s
+kubectl rollout status deployment/mcp-notification -n mcp-demo --timeout=180s
 
 echo "🎉 Deployment completed successfully!"
 
@@ -105,9 +114,10 @@ echo "🎉 Deployment completed successfully!"
 echo ""
 echo "📋 Service URLs:"
 echo "=================="
-echo "Go Event Dashboard: http://$(minikube ip):$(kubectl get service go-event-dashboard -n mcp-demo -o jsonpath='{.spec.ports[0].nodePort}')"
-echo "Prometheus: http://$(minikube ip):$(kubectl get service prometheus -n mcp-demo -o jsonpath='{.spec.ports[0].nodePort}')"
-echo "Grafana: http://$(minikube ip):$(kubectl get service grafana -n mcp-demo -o jsonpath='{.spec.ports[0].nodePort}')"
+MINIKUBE_IP=$(minikube ip 2>/dev/null || echo "localhost")
+echo "Go Event Dashboard: http://${MINIKUBE_IP}:$(kubectl get service go-event-dashboard -n mcp-demo -o jsonpath='{.spec.ports[0].nodePort}' 2>/dev/null || echo 'N/A')"
+echo "Prometheus: http://${MINIKUBE_IP}:$(kubectl get service prometheus -n mcp-demo -o jsonpath='{.spec.ports[0].nodePort}' 2>/dev/null || echo 'N/A')"
+echo "Grafana: http://${MINIKUBE_IP}:$(kubectl get service grafana -n mcp-demo -o jsonpath='{.spec.ports[0].nodePort}' 2>/dev/null || echo 'N/A')"
 echo ""
 echo "🔐 Default credentials:"
 echo "Dashboard: admin/demo"
@@ -118,3 +128,7 @@ echo "kubectl logs -f deployment/go-event-dashboard -n mcp-demo"
 echo "kubectl logs -f deployment/mcp-data-processor -n mcp-demo"
 echo "kubectl logs -f deployment/mcp-analytics -n mcp-demo"
 echo "kubectl logs -f deployment/mcp-notification -n mcp-demo"
+echo ""
+echo "🔍 To check deployment status:"
+echo "kubectl get pods -n mcp-demo"
+echo "kubectl describe pod <pod-name> -n mcp-demo"
