@@ -189,8 +189,8 @@ async def main():
                 server_name="analytics",
                 server_version="1.0.0",
                 capabilities=server_instance.server.get_capabilities(
-                    notification_options={},
-                    experimental_capabilities={}
+                    notification_options=None,
+                    experimental_capabilities=None
                 )
             )
         )
