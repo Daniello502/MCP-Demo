@@ -19,7 +19,7 @@ spec:
       - name: docker-hub-secret
       containers:
       - name: go-event-dashboard
-        image: docker.io/$(DOCKER_HUB_USERNAME)/mcp-demo-go-event-dashboard:latest
+        image: docker.io/maxperreo/mcp-demo-go-event-dashboard:latest
         ports:
         - containerPort: 8080
           name: http

@@ -25,24 +25,24 @@ echo "🔨 Building and pushing container images..."
 
 # Build Go Event Dashboard
 echo "Building go-event-dashboard..."
-podman build -f Dockerfile.go-event-dashboard -t "docker.io/$DOCKER_HUB_USERNAME/mcp-demo-go-event-dashboard:latest" .
-podman push "docker.io/$DOCKER_HUB_USERNAME/mcp-demo-go-event-dashboard:latest"
+podman build -f Dockerfile.go-event-dashboard -t "docker.io/maxperreo/mcp-demo-go-event-dashboard:latest" .
+podman push "docker.io/maxperreo/mcp-demo-go-event-dashboard:latest"
 
 # Build MCP Servers
 echo "Building MCP servers..."
 cd mcp-servers/data-processor
-podman build -t "docker.io/$DOCKER_HUB_USERNAME/mcp-demo-data-processor:latest" .
-podman push "docker.io/$DOCKER_HUB_USERNAME/mcp-demo-data-processor:latest"
+podman build -t "docker.io/maxperreo/mcp-demo-data-processor:latest" .
+podman push "docker.io/maxperreo/mcp-demo-data-processor:latest"
 cd ../..
 
 cd mcp-servers/analytics
-podman build -t "docker.io/$DOCKER_HUB_USERNAME/mcp-demo-analytics:latest" .
-podman push "docker.io/$DOCKER_HUB_USERNAME/mcp-demo-analytics:latest"
+podman build -t "docker.io/maxperreo/mcp-demo-analytics:latest" .
+podman push "docker.io/maxperreo/mcp-demo-analytics:latest"
 cd ../..
 
 cd mcp-servers/notification
-podman build -t "docker.io/$DOCKER_HUB_USERNAME/mcp-demo-notification:latest" .
-podman push "docker.io/$DOCKER_HUB_USERNAME/mcp-demo-notification:latest"
+podman build -t "docker.io/maxperreo/mcp-demo-notification:latest" .
+podman push "docker.io/maxperreo/mcp-demo-notification:latest"
 cd ../..
 
 echo "✅ Container images built and pushed"
@@ -58,7 +58,7 @@ echo "🔐 Creating Docker Hub secret..."
 kubectl delete secret docker-hub-secret -n mcp-demo --ignore-not-found=true
 kubectl create secret docker-registry docker-hub-secret \
   --docker-server="docker.io" \
-  --docker-username="$DOCKER_HUB_USERNAME" \
+  --docker-username="maxperreo" \
   --docker-password="$DOCKER_HUB_TOKEN" \
   --namespace=mcp-demo
 
